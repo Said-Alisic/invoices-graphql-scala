@@ -1,0 +1,11 @@
+type Invoice {
+  id: ID!
+  recipientEmail: String!
+  recipientName: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Query {
+  invoices: [Invoice!]!
+}
