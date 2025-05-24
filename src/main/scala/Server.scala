@@ -27,7 +27,7 @@ object Server extends IOApp {
         QueryParser.parse(query) match {
           case Success(ast) =>
             val execution = Executor.execute(
-              schema = Schema.SchemaDefinition,
+              schema = InvoicesSchema.SchemaDefinition,
               queryAst = ast,
               userContext = (),
               variables = variables.getOrElse(Json.obj()),
