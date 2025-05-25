@@ -1,3 +1,5 @@
+package libs.types
+
 import java.time.LocalDateTime
 import sangria.schema._
 import sangria.ast.StringValue
