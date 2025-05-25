@@ -5,6 +5,8 @@ version := "0.1"
 scalaVersion := "2.13.14"
 
 val http4sVersion = "0.23.14"
+val slickVersion = "3.4.1"
+val mysqlVersion = "8.0.33"
 
 libraryDependencies ++= Seq(
   // Sangria and Circe
@@ -16,7 +18,13 @@ libraryDependencies ++= Seq(
   // HTTP4S
   "org.http4s" %% "http4s-blaze-server" % http4sVersion,
   "org.http4s" %% "http4s-dsl" % http4sVersion,
-  "org.http4s" %% "http4s-circe" % http4sVersion
+  "org.http4s" %% "http4s-circe" % http4sVersion,
+
+  // For MySQL and dotenv
+  "com.typesafe.slick" %% "slick" % slickVersion,
+  "com.typesafe.slick" %% "slick-hikaricp" % slickVersion,
+  "mysql" % "mysql-connector-java" % mysqlVersion,
+  "io.github.cdimascio" % "java-dotenv" % "5.2.2"
 )
 
-
+Compile / unmanagedSourceDirectories += baseDirectory.value / "src" / "libs"
