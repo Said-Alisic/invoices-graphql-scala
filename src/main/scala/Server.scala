@@ -9,9 +9,14 @@ import io.circe.syntax._
 import sangria.execution._
 import sangria.parser.QueryParser
 import sangria.marshalling.circe._
-
-import scala.util.{Success, Failure}
+import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Success, Failure}
+import libs.db.{Tables}
+import libs.graphql.{InvoicesSchema}
+import libs.config.DatabaseConfig.DB
+import slick.jdbc.MySQLProfile.api._
+
 
 object Server extends IOApp {
 
@@ -51,13 +56,23 @@ object Server extends IOApp {
   }
 
   override def run(args: List[String]): IO[ExitCode] = {
-    val httpApp = graphqlEndpoint.orNotFound
+    
+    // Create tables schema in the DB before starting the server
+    val createSchemaF: Future[Unit] = DB.run(
+        Tables.invoices.schema.createIfNotExists
+      ).map(_ => ())
 
-    BlazeServerBuilder[IO]
-      .bindHttp(8080, "localhost")
-      .withHttpApp(httpApp)
-      .resource
-      .use(_ => IO.never)
-      .as(ExitCode.Success)
+    val createSchemaIO: IO[Unit] = IO.fromFuture(IO.pure(createSchemaF))
+
+    createSchemaIO.flatMap { _ =>
+      val httpApp = graphqlEndpoint.orNotFound
+
+      BlazeServerBuilder[IO]
+        .bindHttp(8080, "localhost")
+        .withHttpApp(httpApp)
+        .resource
+        .use(_ => IO.never)
+        .as(ExitCode.Success)
+    }
   }
 }

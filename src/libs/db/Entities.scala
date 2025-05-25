@@ -1,3 +1,5 @@
+package libs.db
+
 import java.time.LocalDateTime
 
 case class Invoice(
